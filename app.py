@@ -1,13 +1,16 @@
 
-from flask import Flask, render_template, request, redirect
+from flask import Flask, jsonify, render_template, request, redirect
 from flask_sqlalchemy import SQLAlchemy
 from flask import request
 import datetime
+from datetime import datetime, timezone, timedelta
+
 
 
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://Arthur_Malveste:Amm.22.01.78@localhost/portaria'
+app.config['TIMEZONE'] = 'America/Sao_Paulo'  # Substitua pelo seu fuso horário
 db = SQLAlchemy(app)
 
 # parte do banco de dados
@@ -21,7 +24,8 @@ class Pessoa(db.Model):
     whatsapp = db.Column(db.String(10), unique=True, nullable=False)
     endereco = db.Column(db.String(100), nullable=False)
     observacao = db.Column(db.Text)
-    data_cadastro = db.Column(db.DateTime, default=datetime.datetime.utcnow)  # Adicionando a coluna de hora de entrada
+    data_cadastro = db.Column(db.DateTime, default=datetime.now(timezone(timedelta(hours=-3))))  # Adicionando a coluna de hora de entrada
+    cep = db.Column(db.String(8), unique=True, nullable=False)
 
     def __repr__(self):
         return f'<Pessoa {self.nome_completo}>'
@@ -39,17 +43,35 @@ def index():
 
 @app.route('/cadastro', methods=['GET', 'POST'])
 def cadastro():
+
     if request.method == 'POST':
         nome_completo = request.form['nome_completo']
-        email = request.form['email']
-        cpf = request.form['cpf']
-        celular = request.form['celular']
-        telefone = request.form['telefone']
-        whatsapp = request.form['whatsapp']
-        endereco =request.form['endereco']
-        observacao = request.form['observacao']
-
-        # A data_cadastro é definida automaticamente como datetime.datetime.utcnow()
+        
+        # Verificar se o nome já existe no banco de dados
+        pessoa_existente = Pessoa.query.filter_by(nome_completo=nome_completo).first()
+        
+        if pessoa_existente:
+            # Se o nome já existe, preencha os outros campos do formulário
+            cpf = pessoa_existente.cpf
+            celular = pessoa_existente.celular
+            email = pessoa_existente.email
+            # data_cadastro = pessoa_existente.data_cadastro
+            telefone = pessoa_existente.telefone
+            whatsapp = pessoa_existente.whatsapp
+            endereco = pessoa_existente.endereco
+            cep = pessoa_existente.cep
+            observacao = pessoa_existente.observacao
+        else:
+            # Se o nome não existe, obtenha os valores dos outros campos do formulário
+            nome_completo = request.form['nome_completo']
+            email = request.form['email']
+            cpf = request.form['cpf']
+            celular = request.form['celular']
+            telefone = request.form['telefone']
+            whatsapp = request.form['whatsapp']
+            endereco =request.form['endereco']
+            observacao = request.form['observacao']
+            cep = request.form['cep']
 
         pessoa = Pessoa(
             nome_completo=nome_completo,
@@ -59,7 +81,9 @@ def cadastro():
             telefone=telefone,
             whatsapp=whatsapp,
             observacao=observacao,
-            endereco=endereco
+            endereco=endereco,
+            cep=cep,
+            # data_cadastro=data_cadastro
         )
 
         db.session.add(pessoa)
@@ -99,6 +123,31 @@ def excluir_pessoa(id):
         return "Linha excluída com sucesso", 200
     else:
         return "ID não encontrado", 404
+
+
+@app.route('/verificar_nome', methods=['GET'])
+def verificar_nome():
+    nome = request.args.get('nome')  # Obtenha o nome da consulta de URL
+    pessoa = Pessoa.query.filter_by(nome_completo=nome).first()
+
+    if pessoa:
+        # Se o nome já existir, retorne seus detalhes em JSON
+        return {
+            'nome_completo': pessoa.nome_completo,
+            'email': pessoa.email,
+            'cpf': pessoa.cpf,
+            'celular': pessoa.celular,
+            'telefone': pessoa.telefone,
+            'whatsapp': pessoa.whatsapp,
+            'endereco': pessoa.endereco,
+            'observacao': pessoa.observacao,
+            'cep': pessoa.cep,
+        }
+    else:
+        # Se o nome não existir, retorne um objeto JSON vazio
+        return {}
+
+
 
 
 if __name__ == '__main__':

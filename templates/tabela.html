@@ -55,6 +55,7 @@
                                 		<th>Telefone</th>
 		<th>WhatsApp</th>
 		<th>Endereço</th>
+		<th>CEP</th>
 		<th>Observação</th>
 		<th>Data</th>
 		<tbody>
@@ -74,8 +75,15 @@
                 <td>{{ pessoa.telefone }}</td>
                 <td>{{ pessoa.whatsapp }}</td>
 				<td>{{ pessoa.endereco }}</td>
+				<td>{{ pessoa.cep }}</td>
                 <td>{{ pessoa.observacao }}</td>
-                <td>{{ pessoa.data_cadastro.strftime('%Y-%m-%d %H:%M:%S') }}</td> <!-- Formatando a data para exibição -->
+                <td>
+					{% if pessoa.data_cadastro is not none %}
+						{{ pessoa.data_cadastro.strftime('%Y-%m-%d %H:%M:%S') }}
+					{% else %}
+						Data não disponível
+					{% endif %}
+				</td>
             </tr>
             {% endfor %}
         </tbody>
@@ -83,31 +91,30 @@
 {% if mostrar_erro %}
 
 {% endif %}
-	
-	</body>
-	<script>
-		$(document).ready(function() {
-			$(".btn-excluir").click(function() {
-				var id = $(this).data("id");
-				
-				// Confirmar a exclusão com o usuário (opcional)
-				var confirmar = confirm("Deseja realmente excluir esta linha?");
-				if (!confirmar) {
-					return;
+<script>
+	$(document).ready(function() {
+		$(".btn-excluir").click(function() {
+			var id = $(this).data("id");
+			
+			// Confirmar a exclusão com o usuário (opcional)
+			var confirmar = confirm("Deseja realmente excluir esta linha?");
+			if (!confirmar) {
+				return;
+			}
+			
+			$.ajax({
+				url: "/excluir/" + id,  // Rota para excluir
+				type: "DELETE",  // Método HTTP DELETE
+				success: function(response) {
+					// Atualizar a tabela ou fazer outras ações após a exclusão
+					location.reload();  // Recarregar a página (ou atualizar a tabela de outra maneira)
+				},
+				error: function(error) {
+					console.error("Erro ao excluir linha:", error);
 				}
-				
-				$.ajax({
-					url: "/excluir/" + id,  // Rota para excluir
-					type: "DELETE",  // Método HTTP DELETE
-					success: function(response) {
-						// Atualizar a tabela ou fazer outras ações após a exclusão
-						location.reload();  // Recarregar a página (ou atualizar a tabela de outra maneira)
-					},
-					error: function(error) {
-						console.error("Erro ao excluir linha:", error);
-					}
-				});
 			});
 		});
-		</script>
+	});
+	</script>			
+	</body>
 </html>
