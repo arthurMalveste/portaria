@@ -12,9 +12,11 @@
   </head>
   <body>
     <div class="div-botao">
-      <button>
-        <span>Tabela</span>
-      </button>
+      <a href="/tabela">
+        <button>
+          <span>Tabela</span>
+        </button>
+      </a>
     </div>
     
     <section class="container">
@@ -42,7 +44,7 @@
           </div>
           <div class="input-box">
             <label>Data</label>
-            <input type="date" placeholder="Data" required />
+            <input type="date" placeholder="Data" />
           </div>
         </div>
         <div class="column">
@@ -58,11 +60,11 @@
         <div class="column">
           <div class="input-box">
             <label for="endereco">Endereço</label>
-            <input name="endereco" id="endereco" type="text" placeholder="Endereço"/>
+            <input name="endereco" id="endereco" type="text" placeholder="Endereço" required/>
           </div>
           <div class="input-box">
             <label for="cep">CEP</label>
-            <input name="cep" id="cep" type="number" placeholder="CEP"/>
+            <input name="cep" id="cep" type="number" placeholder="CEP" required/>
           </div>
         </div>
         <div class="input-box">

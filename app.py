@@ -46,50 +46,45 @@ def cadastro():
 
     if request.method == 'POST':
         nome_completo = request.form['nome_completo']
-        
+
         # Verificar se o nome já existe no banco de dados
         pessoa_existente = Pessoa.query.filter_by(nome_completo=nome_completo).first()
-        
+
         if pessoa_existente:
-            # Se o nome já existe, preencha os outros campos do formulário
-            cpf = pessoa_existente.cpf
-            celular = pessoa_existente.celular
-            email = pessoa_existente.email
-            # data_cadastro = pessoa_existente.data_cadastro
-            telefone = pessoa_existente.telefone
-            whatsapp = pessoa_existente.whatsapp
-            endereco = pessoa_existente.endereco
-            cep = pessoa_existente.cep
-            observacao = pessoa_existente.observacao
+            # Se o nome já existe, crie uma nova entrada com a data atual
+            pessoa = Pessoa(
+                nome_completo=nome_completo,
+                email=request.form['email'],
+                cpf=request.form['cpf'],
+                celular=request.form['celular'],
+                telefone=request.form['telefone'],
+                whatsapp=request.form['whatsapp'],
+                endereco=request.form['endereco'],
+                observacao=request.form['observacao'],
+                cep=request.form['cep'],
+                data_cadastro=datetime.now(timezone(timedelta(hours=-3)))
+            )
         else:
             # Se o nome não existe, obtenha os valores dos outros campos do formulário
-            nome_completo = request.form['nome_completo']
-            email = request.form['email']
-            cpf = request.form['cpf']
-            celular = request.form['celular']
-            telefone = request.form['telefone']
-            whatsapp = request.form['whatsapp']
-            endereco =request.form['endereco']
-            observacao = request.form['observacao']
-            cep = request.form['cep']
-
-        pessoa = Pessoa(
-            nome_completo=nome_completo,
-            email=email,
-            cpf=cpf,
-            celular=celular,
-            telefone=telefone,
-            whatsapp=whatsapp,
-            observacao=observacao,
-            endereco=endereco,
-            cep=cep,
-            # data_cadastro=data_cadastro
-        )
+            pessoa = Pessoa(
+                nome_completo=nome_completo,
+                email=request.form['email'],
+                cpf=request.form['cpf'],
+                celular=request.form['celular'],
+                telefone=request.form['telefone'],
+                whatsapp=request.form['whatsapp'],
+                endereco=request.form['endereco'],
+                observacao=request.form['observacao'],
+                cep=request.form['cep'],
+                data_cadastro=datetime.now(timezone(timedelta(hours=-3)))
+            )
 
         db.session.add(pessoa)
         db.session.commit()
         return redirect('/')
+
     return render_template('index.html')
+
 
 @app.route('/tabela', methods=['GET'])
 def tabela():
