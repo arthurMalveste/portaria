@@ -24,17 +24,17 @@
       <form action="/cadastro" method="POST"class="form">
         <div class="input-box">
           <label for="nome_completo">Nome Completo</label>
-          <input type="text" name="nome_completo" id="nome_completo" placeholder="Nome Completo" required onblur="varnome()">
+          <input type="text" name="nome_completo" id="nome_completo" placeholder="Nome Completo" maxlength="50" required onblur="varnome()">
         </div>
 
         <div class="input-box">
           <label for="email">Email</label>
-          <input type="text" id="email" name="email"  placeholder="Email" required />
+          <input type="text" id="email" name="email" maxlength="45"  placeholder="Email" required />
         </div>
 
         <div class="input-box">
           <label for="cpf">CPF ou CNPJ</label>
-          <input type="number" id="cpf" name="cpf"  placeholder="CPF ou  CNPJ" required/>
+          <input type="number" id="cpf" name="cpf" placeholder="CPF ou  CNPJ" required/>
         </div>
 
         <div class="column">
@@ -60,7 +60,7 @@
         <div class="column">
           <div class="input-box">
             <label for="endereco">Endereço</label>
-            <input name="endereco" id="endereco" type="text" placeholder="Endereço" required/>
+            <input name="endereco" id="endereco" type="text" maxlength="45" placeholder="Endereço" required/>
           </div>
           <div class="input-box">
             <label for="cep">CEP</label>
@@ -69,7 +69,7 @@
         </div>
         <div class="input-box">
           <label for="observacao">Observação</label>
-          <input name="observacao" id="observacao" type="text" placeholder="Comentário ou observação"/>
+          <input name="observacao" id="observacao" type="text" maxlength="45" placeholder="Comentário ou observação"/>
         </div>
         <input class="button" type="submit" value="Cadastrar">
       </form>
