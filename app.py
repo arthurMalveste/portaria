@@ -9,7 +9,7 @@ from datetime import datetime, timezone, timedelta
 
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://Arthur_Malveste:Amm.22.01.78@localhost/portaria'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://fzfvrezhhd:6E6HI5SRUD4CPNAQ@negociare-server/negociare'
 app.config['TIMEZONE'] = 'America/Sao_Paulo'  # Substitua pelo seu fuso horário
 db = SQLAlchemy(app)
 
